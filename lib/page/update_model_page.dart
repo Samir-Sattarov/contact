@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/db/database.dart';
-import 'package:flutter_application_1/model/list_tile_model.dart';
+import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdateModelPage extends StatefulWidget {
-  static route(memoDb, updateName, updatePhone, id) => MaterialPageRoute<bool>(
+  static route(updateName, updatePhone, id) => MaterialPageRoute<bool>(
         builder: (context) => UpdateModelPage(
-          memoDb: memoDb,
           updateName: updateName,
           updatePhone: updatePhone,
           id: id,
@@ -15,10 +14,8 @@ class UpdateModelPage extends StatefulWidget {
   final String updateName;
   final String updatePhone;
   final int id;
-  final ContactDataBaseProvider memoDb;
   const UpdateModelPage(
       {Key? key,
-      required this.memoDb,
       required this.updateName,
       required this.updatePhone,
       required this.id})
@@ -30,9 +27,7 @@ class UpdateModelPage extends StatefulWidget {
 
 class _UpdateModelPageState extends State<UpdateModelPage> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-
   final TextEditingController _controllerName = TextEditingController();
-
   final TextEditingController _controllerPhone = TextEditingController();
 
   @override
@@ -130,15 +125,12 @@ class _UpdateModelPageState extends State<UpdateModelPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           if (_key.currentState!.validate() == true) {
-            ListTileModel newModel = ListTileModel(
-              id: widget.id,
-              title: _controllerName.text,
-              phone: _controllerPhone.text,
+            BlocProvider.of<ContactCubit>(context).update(
+              widget.id,
+              _controllerName.text,
+              _controllerPhone.text,
             );
 
-            await widget.memoDb.updateMemo(widget.id, newModel);
-
-            // await widget.memoDb.fetchMemos();
             return Navigator.pop(context, true);
           }
         },

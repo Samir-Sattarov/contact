@@ -1,9 +1,9 @@
-class ListTileModel {
-  final int? id;
+class ContactModel {
+  int? id;
   final String title;
   final String phone;
 
-  ListTileModel({this.id, required this.title, required this.phone});
+  ContactModel({this.id, required this.title, required this.phone});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

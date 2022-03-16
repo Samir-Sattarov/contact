@@ -1,13 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/db/database.dart';
-import 'package:flutter_application_1/model/list_tile_model.dart';
+import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
 import 'package:flutter_application_1/page/update_model_page.dart';
 import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,13 +15,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ContactDataBaseProvider memoDb = ContactDataBaseProvider();
-  List<ListTileModel> contact = [];
   String query = '';
   @override
   void initState() {
     super.initState();
-    initialization();
   }
 
   @override
@@ -34,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              refresh();
+              BlocProvider.of<ContactCubit>(context).getAll();
             },
             icon: const Icon(Icons.refresh),
           ),
@@ -43,43 +39,31 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           buildSearch(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: contact.length,
-              itemBuilder: (BuildContext context, int index) {
-                final model = contact[index];
-                return buildModel(model);
-              },
-            ),
+          BlocBuilder<ContactCubit, List<ContactModel>>(
+            builder: (context, contact) {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: contact.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final model = contact[index];
+                    return buildModel(model);
+                  },
+                ),
+              );
+            },
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final isAdded =
-              await Navigator.push(context, AddModelPage.route(memoDb));
+          final isAdded = await Navigator.push(context, AddModelPage.route());
           if (isAdded != null && isAdded == true) {
-            refresh();
+            BlocProvider.of<ContactCubit>(context).getAll();
           }
         },
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  Future<List<ListTileModel>> initialization() async {
-    contact = await memoDb.fetchMemos();
-    setState(() {
-      contact;
-    });
-    return contact = await memoDb.fetchMemos();
-  }
-
-  Future refresh() async {
-    contact = await memoDb.fetchMemos();
-    setState(() {
-      contact;
-    });
   }
 
   Widget buildSearch() => SearchWidget(
@@ -89,26 +73,10 @@ class _HomePageState extends State<HomePage> {
       );
 
   void search(String query) {
-    if (query.isEmpty) {
-      refresh();
-    } else {
-      List<ListTileModel> searched = contact.where((model) {
-        final titlelower = model.title.toLowerCase();
-        final phonelower = model.phone.toLowerCase();
-        final searchlower = query.toLowerCase();
-
-        return titlelower.contains(searchlower) ||
-            phonelower.contains(searchlower);
-      }).toList();
-      setState(() {
-        query = query;
-
-        contact = searched;
-      });
-    }
+    BlocProvider.of<ContactCubit>(context).search(query);
   }
 
-  Widget buildModel(ListTileModel model) => ListTileWidget(
+  Widget buildModel(ContactModel model) => ListTileWidget(
         title: model.title,
         phone: model.phone,
         id: model.id.toString(),
@@ -116,14 +84,13 @@ class _HomePageState extends State<HomePage> {
           final result = await Navigator.push<bool>(
             context,
             UpdateModelPage.route(
-              memoDb,
               model.title,
               model.phone,
               model.id!.toInt(),
             ),
           );
           if (result != null && result) {
-            await refresh();
+            BlocProvider.of<ContactCubit>(context).getAll();
           }
         },
         onDelete: () async {
@@ -143,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text("Yes"),
                   onPressed: () {
-                    refresh();
+                    BlocProvider.of<ContactCubit>(context).delete(model.id!);
                     Navigator.pop(context, true);
                   },
                 ),
@@ -153,8 +120,6 @@ class _HomePageState extends State<HomePage> {
               child: Text('Delete'),
             ),
           );
-          await memoDb.deleteMemo(model.id!);
-          memoDb.fetchMemos();
         },
       );
 }

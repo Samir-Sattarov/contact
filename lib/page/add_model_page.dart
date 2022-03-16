@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/db/database.dart';
-import 'package:flutter_application_1/model/list_tile_model.dart';
+import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddModelPage extends StatelessWidget {
-  static route(memoDb) => MaterialPageRoute(
-        builder: (context) => AddModelPage(
-          memoDb: memoDb,
-        ),
-      );
+  static route() => MaterialPageRoute(builder: (context) => AddModelPage());
 
-  final ContactDataBaseProvider memoDb;
-  AddModelPage({Key? key, required this.memoDb}) : super(key: key);
+  AddModelPage({Key? key}) : super(key: key);
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
@@ -103,14 +98,10 @@ class AddModelPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           if (_key.currentState!.validate() == true) {
-            await memoDb.addItem(
-              ListTileModel(
-                title: _controllerName.text,
-                phone: _controllerPhone.text,
-              ),
+            BlocProvider.of<ContactCubit>(context).add(
+              _controllerName.text,
+              _controllerPhone.text,
             );
-
-            await memoDb.fetchMemos();
             return Navigator.pop(context, true);
           }
         },

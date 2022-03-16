@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_application_1/model/list_tile_model.dart';
+import 'package:flutter_application_1/db/repository.dart';
+import 'package:flutter_application_1/model/contact_model.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
-class ContactDataBaseProvider {
+class LocalContactRepository implements Repository<ContactModel> {
   Future<Database> init() async {
     Directory directory =
         await getApplicationDocumentsDirectory(); //returns a directory which stores permanent files
@@ -23,7 +24,8 @@ class ContactDataBaseProvider {
     });
   }
 
-  Future<int> addItem(ListTileModel item) async {
+  @override
+  Future<int> create(ContactModel item) async {
     //returns number of items inserted as an integer
 
     final db = await init(); //open database
@@ -35,7 +37,8 @@ class ContactDataBaseProvider {
     );
   }
 
-  Future<List<ListTileModel>> fetchMemos() async {
+  @override
+  Future<List<ContactModel>> getAll() async {
     //returns the memos as a list (array)
 
     final db = await init();
@@ -44,7 +47,7 @@ class ContactDataBaseProvider {
 
     return List.generate(maps.length, (i) {
       //create a list of memos
-      return ListTileModel(
+      return ContactModel(
         id: maps[i]['id'] as int,
         title: maps[i]['title'] as String,
         phone: maps[i]['content'] as String,
@@ -52,7 +55,8 @@ class ContactDataBaseProvider {
     });
   }
 
-  Future<int> deleteMemo(int id) async {
+  @override
+  Future<int> delete(int id) async {
     //returns number of items deleted
     final db = await init();
 
@@ -64,7 +68,8 @@ class ContactDataBaseProvider {
     return result;
   }
 
-  Future<int> updateMemo(int id, ListTileModel item) async {
+  @override
+  Future<int> update(int id, ContactModel item) async {
     // returns the number of rows updated
 
     final db = await init();
