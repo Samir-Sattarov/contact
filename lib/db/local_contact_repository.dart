@@ -56,7 +56,9 @@ class LocalContactRepository implements Repository<ContactModel> {
   }
 
   @override
-  Future<int> delete(int id) async {
+  Future<int> delete(
+    int id,
+  ) async {
     //returns number of items deleted
     final db = await init();
 

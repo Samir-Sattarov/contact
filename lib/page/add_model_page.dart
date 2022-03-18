@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddModelPage extends StatelessWidget {
@@ -10,6 +12,7 @@ class AddModelPage extends StatelessWidget {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
+  final firebase = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +105,13 @@ class AddModelPage extends StatelessWidget {
               _controllerName.text,
               _controllerPhone.text,
             );
+
+            // firebase.collection('contact').add({
+            //   'model': ContactModel(
+            //     phone: _controllerPhone.text,
+            //     title: _controllerName.text,
+            //   ).toMap()
+            // });
             return Navigator.pop(context, true);
           }
         },

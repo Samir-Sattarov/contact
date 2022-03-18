@@ -12,4 +12,12 @@ class ContactModel {
       "content": phone,
     };
   }
+
+  factory ContactModel.fromJson(json) {
+    return ContactModel(
+      id: json['id'],
+      title: json['title'],
+      phone: json['phone'],
+    );
+  }
 }

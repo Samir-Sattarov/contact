@@ -7,6 +7,8 @@ import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -110,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text("Yes"),
                   onPressed: () {
-                    BlocProvider.of<ContactCubit>(context).delete(model.id!);
+                    BlocProvider.of<ContactCubit>(context).delete(model.id);
                     Navigator.pop(context, true);
                   },
                 ),
