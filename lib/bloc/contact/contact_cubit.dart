@@ -4,8 +4,6 @@ import 'package:flutter_application_1/model/contact_model.dart';
 
 import '../../db/repository.dart';
 
-part 'contact_state.dart';
-
 class ContactCubit extends Cubit<List<ContactModel>> {
   final Repository<ContactModel> contactRepository;
 

@@ -10,7 +10,7 @@ class FireBaseContactRepository implements Repository<ContactModel> {
 
   @override
   Future<int> create(ContactModel item) async {
-    _firebase.collection(collection).add({'model': item.toMap()});
+    _firebase.collection(collection).add(item.toMap());
 
     contacts.add(item);
     return item.id ?? 0;
@@ -23,9 +23,8 @@ class FireBaseContactRepository implements Repository<ContactModel> {
 
     snap.docs.forEach(
       (document) {
-        print(document.id);
-        String title = document.get('model')['title'];
-        String content = document.get('model')['content'];
+        String title = document['title'];
+        String content = document['content'];
         contacts.add(
           ContactModel(
             title: title,
@@ -40,12 +39,12 @@ class FireBaseContactRepository implements Repository<ContactModel> {
   }
 
   @override
-  Future<int> update(int id, ContactModel item) async {
-    print(item.title);
-    print(item.phone);
+  Future update(id, ContactModel item) async {
+    _firebase.collection(collection).doc(id).update({
+      'title': item.title,
+      'content': item.phone,
+    });
 
-    // ContactModel contact = contacts.firstWhere((element) => element.id == id);
-    // contact = item;
     return 1;
   }
 

@@ -5,5 +5,5 @@ abstract class Repository<T> {
 
   Future delete(id);
 
-  Future<int> update(int id, T item);
+  Future update(id, T item);
 }

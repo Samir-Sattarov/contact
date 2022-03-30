@@ -70,7 +70,6 @@ class AddModelPage extends StatelessWidget {
                       if (value!.isEmpty) {
                         return 'Enter phone like +###(##)###-##-##';
                       }
-
                       return null;
                     }),
                     controller: _controllerPhone,
@@ -105,13 +104,6 @@ class AddModelPage extends StatelessWidget {
               _controllerName.text,
               _controllerPhone.text,
             );
-
-            // firebase.collection('contact').add({
-            //   'model': ContactModel(
-            //     phone: _controllerPhone.text,
-            //     title: _controllerName.text,
-            //   ).toMap()
-            // });
             return Navigator.pop(context, true);
           }
         },
