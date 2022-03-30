@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
@@ -7,8 +11,7 @@ import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,9 +21,50 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String query = '';
+  final ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
   @override
   void initState() {
     super.initState();
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectibityStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (error) {
+      developer.log('Error message', error: error);
+    }
+
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectibityStatus(result);
+  }
+
+  Future<void> _updateConnectibityStatus(ConnectivityResult result) async {
+    if (result == ConnectivityResult.wifi) {
+      developer.log('connected to wifi');
+    } else if (result == ConnectivityResult.none) {
+      developer.log('no connection to WIFI ');
+    } else if (result == ConnectivityResult.mobile) {
+      developer.log('connected to Mobile Data');
+    }
   }
 
   @override
@@ -112,7 +156,6 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text("Yes"),
                   onPressed: () {
-                    print(model.id);
                     BlocProvider.of<ContactCubit>(context).delete(model.id);
                     Navigator.pop(context, true);
                   },
