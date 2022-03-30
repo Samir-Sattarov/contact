@@ -13,7 +13,7 @@ class UpdateModelPage extends StatefulWidget {
       );
   final String updateName;
   final String updatePhone;
-  final int id;
+  final id;
   const UpdateModelPage(
       {Key? key,
       required this.updateName,

@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
             UpdateModelPage.route(
               model.title,
               model.phone,
-              model.id!.toInt(),
+              model.id,
             ),
           );
           if (result != null && result) {
@@ -112,6 +112,7 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text("Yes"),
                   onPressed: () {
+                    print(model.id);
                     BlocProvider.of<ContactCubit>(context).delete(model.id);
                     Navigator.pop(context, true);
                   },

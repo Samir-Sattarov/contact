@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ContactCubit contactCubit = ContactCubit(FireBaseContactRepository())
+    ContactCubit contactCubit = ContactCubit(LocalContactRepository())
       ..getAll();
     return BlocProvider(
       create: (context) => contactCubit,

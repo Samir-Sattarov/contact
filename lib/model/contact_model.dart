@@ -1,5 +1,5 @@
 class ContactModel {
-  int? id;
+  final id;
   final String title;
   final String phone;
 
