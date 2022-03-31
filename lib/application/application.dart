@@ -1,5 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/db/firebase_contact_repository.dart';
 import 'package:flutter_application_1/db/local_contact_repository.dart';
 
@@ -11,10 +13,20 @@ class MyApp extends StatelessWidget {
 
   @override
   build(BuildContext context) {
-    ContactCubit contactCubit = ContactCubit(FireBaseContactRepository())
-      ..getAll();
-    return BlocProvider(
-      create: (context) => contactCubit,
+    const ConnectivityResult _connectionStatus = ConnectivityResult.none;
+    final Connectivity _connectivity = Connectivity();
+    NetworkCubit networkCubit = NetworkCubit(_connectionStatus, _connectivity);
+    ContactCubit contactCubit =
+        ContactCubit(LocalContactRepository(), networkCubit)..getAll();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ContactCubit>(
+          create: (BuildContext context) => contactCubit,
+        ),
+        BlocProvider<NetworkCubit>(
+          create: (BuildContext context) => networkCubit,
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',

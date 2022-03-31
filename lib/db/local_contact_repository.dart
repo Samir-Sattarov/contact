@@ -18,7 +18,7 @@ class LocalContactRepository implements Repository<ContactModel> {
         version: 1, onCreate: (Database db, int version) async {
       await db.execute("""
           CREATE TABLE contact(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          id TEXT,
           title TEXT,
           content TEXT)""");
     });
@@ -48,7 +48,7 @@ class LocalContactRepository implements Repository<ContactModel> {
     return List.generate(maps.length, (i) {
       //create a list of memos
       return ContactModel(
-        id: maps[i]['id'] as int,
+        id: maps[i]['id'] as String,
         title: maps[i]['title'] as String,
         phone: maps[i]['content'] as String,
       );
@@ -77,5 +77,12 @@ class LocalContactRepository implements Repository<ContactModel> {
     int result = await db
         .update("contact", item.toMap(), where: "id = ?", whereArgs: [id]);
     return result;
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    final db = await init();
+
+    await db.delete("contact");
   }
 }

@@ -4,6 +4,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/bloc/network/network_cubit.dart';
+import 'package:flutter_application_1/bloc/network/network_state.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
 import 'package:flutter_application_1/page/update_model_page.dart';
@@ -21,51 +23,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String query = '';
-  final ConnectivityResult _connectionStatus = ConnectivityResult.none;
-  final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    initConnectivity();
-
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectibityStatus);
-  }
-
-  @override
-  void dispose() {
-    _connectivitySubscription.cancel();
-    super.dispose();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initConnectivity() async {
-    late ConnectivityResult result;
-
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (error) {
-      developer.log('Error message', error: error);
-    }
-
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectibityStatus(result);
-  }
-
-  Future<void> _updateConnectibityStatus(ConnectivityResult result) async {
-    if (result == ConnectivityResult.wifi) {
-      developer.log('connected to wifi');
-    } else if (result == ConnectivityResult.none) {
-      developer.log('no connection to WIFI ');
-    } else if (result == ConnectivityResult.mobile) {
-      developer.log('connected to Mobile Data');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,12 +31,24 @@ class _HomePageState extends State<HomePage> {
         elevation: 5,
         title: const Text('Contact Book Application'),
         actions: [
-          IconButton(
-            onPressed: () async {
-              BlocProvider.of<ContactCubit>(context).getAll();
+          IconButton(onPressed: () async {
+            BlocProvider.of<ContactCubit>(context).getAll();
+          }, icon: BlocBuilder<NetworkCubit, NetworkState>(
+            builder: (context, state) {
+              if (state is NetworkSearchingState) {
+                return const SizedBox.square(
+                  dimension: 20.0,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 1.0,
+                  ),
+                );
+              }
+              return Icon(
+                state is ConnectedState ? Icons.wifi : Icons.cloud_off_rounded,
+              );
             },
-            icon: const Icon(Icons.refresh),
-          ),
+          )),
         ],
       ),
       body: Column(
@@ -135,7 +104,7 @@ class _HomePageState extends State<HomePage> {
               model.id,
             ),
           );
-          if (result != null && result) {
+          if (result != null && result == true) {
             BlocProvider.of<ContactCubit>(context).getAll();
           }
         },

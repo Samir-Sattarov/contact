@@ -9,11 +9,10 @@ class FireBaseContactRepository implements Repository<ContactModel> {
   final String collection = 'contact';
 
   @override
-  Future<int> create(ContactModel item) async {
+  Future create(ContactModel item) async {
     _firebase.collection(collection).add(item.toMap());
 
     contacts.add(item);
-    return item.id ?? 0;
   }
 
   @override
@@ -53,5 +52,16 @@ class FireBaseContactRepository implements Repository<ContactModel> {
     print("deleted $id");
     await _firebase.collection(collection).doc(id.toString()).delete();
     return id;
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    QuerySnapshot snap = await _firebase.collection(collection).get();
+    contacts = [];
+    snap.docs.forEach(
+      (document) {
+        delete(document.id);
+      },
+    );
   }
 }
