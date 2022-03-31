@@ -48,7 +48,7 @@ class LocalContactRepository implements Repository<ContactModel> {
     return List.generate(maps.length, (i) {
       //create a list of memos
       return ContactModel(
-        id: maps[i]['id'] as String,
+        id: maps[i]['id'].toString(),
         title: maps[i]['title'] as String,
         phone: maps[i]['content'] as String,
       );

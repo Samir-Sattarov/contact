@@ -1,8 +1,4 @@
-import 'dart:async';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
@@ -13,7 +9,6 @@ import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -40,13 +35,16 @@ class _HomePageState extends State<HomePage> {
                   dimension: 20.0,
                   child: CircularProgressIndicator(
                     color: Colors.white,
-                    strokeWidth: 1.0,
+                    strokeWidth: 2.0,
                   ),
                 );
               }
-              return Icon(
-                state is ConnectedState ? Icons.wifi : Icons.cloud_off_rounded,
-              );
+              return SizedBox.square(
+                  child: Icon(
+                state is NetworkConnectedState
+                    ? Icons.cloud
+                    : Icons.cloud_off_rounded,
+              ));
             },
           )),
         ],
@@ -108,7 +106,7 @@ class _HomePageState extends State<HomePage> {
             BlocProvider.of<ContactCubit>(context).getAll();
           }
         },
-        onDelete: () async {
+        onDelete: () {
           showMyDialogWidget(
             context,
             Row(

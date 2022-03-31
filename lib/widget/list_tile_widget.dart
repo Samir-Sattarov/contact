@@ -19,10 +19,8 @@ class ListTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-
       title: Text(title),
       subtitle: Text(phone),
-      // trailing: Text(id),
       trailing: IconButton(
         onPressed: onDelete,
         icon: const Icon(

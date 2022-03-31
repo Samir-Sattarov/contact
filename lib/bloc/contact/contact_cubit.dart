@@ -17,45 +17,42 @@ class ContactCubit extends Cubit<List<ContactModel>> {
   ContactCubit(this.contactRepository, this.networkCubit) : super([]) {
     networkCubit.stream.listen(_syncData);
     contactRepository.deleteAll();
-
     stream.listen(syncWithLocal);
   }
 
   Future<void> _syncData(NetworkState state) async {
-    if (state is ConnectedState) {
+    if (state is NetworkConnectedState) {
       final lastList = await contactRepository.getAll();
       log("ConnectedState ${lastList.length}");
 
-      await contactRepository.deleteAll();
-
       // 1 удалить старые данные с Удаленную базы данных
+      await contactRepository.deleteAll();
 
       contactRepository = FireBaseContactRepository();
       await contactRepository.deleteAll();
       // 2 добавить локальные данные в Удаленную базу данных
-      lastList.forEach((element) async {
-        await contactRepository.create(element);
-      });
+      for (var model in lastList) {
+        await contactRepository.create(model);
+      }
       // refresh ui
       await getAll();
     }
-    if (state is DisconnectedState) {
-      contactRepository = LocalContactRepository();
-      log('disconnected');
-
-      await getAll();
-    }
+    await getAll();
   }
 
   Future<void> syncWithLocal(List<ContactModel> contacts) async {
-    if (networkCubit.state is ConnectedState) {
-      final repo = LocalContactRepository();
-      await repo.deleteAll();
-      log('Deleted All');
+    if (networkCubit.state is NetworkConnectedState) {
+      final repository = LocalContactRepository();
+      await repository.deleteAll();
 
-      contacts.forEach((element) async {
-        await repo.create(element);
-      });
+      for (var model in contacts) {
+        await repository.create(
+          ContactModel(
+            title: model.title,
+            phone: model.phone,
+          ),
+        );
+      }
     }
   }
 
@@ -86,9 +83,7 @@ class ContactCubit extends Cubit<List<ContactModel>> {
   }
 
   void search(query) async {
-    if (query.isEmpty) {
-      getAll();
-    } else {
+    if (query != null && query.toString().isNotEmpty) {
       List<ContactModel> allContacts = await contactRepository.getAll();
 
       final result = allContacts.where((model) {
@@ -101,10 +96,12 @@ class ContactCubit extends Cubit<List<ContactModel>> {
       }).toList();
 
       emit(result);
+    } else {
+      getAll();
     }
   }
 
-  Future<void> getAll() async {
+  Future getAll() async {
     emit(await contactRepository.getAll());
   }
 }
