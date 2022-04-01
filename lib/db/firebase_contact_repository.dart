@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_application_1/db/repository.dart';
@@ -20,19 +22,17 @@ class FireBaseContactRepository implements Repository<ContactModel> {
     QuerySnapshot snap = await _firebase.collection(collection).get();
     contacts = [];
 
-    snap.docs.forEach(
-      (document) {
-        String title = document['title'];
-        String content = document['content'];
-        contacts.add(
-          ContactModel(
-            title: title,
-            phone: content,
-            id: document.id,
-          ),
-        );
-      },
-    );
+    for (var document in snap.docs) {
+      String title = document['title'];
+      String content = document['content'];
+      contacts.add(
+        ContactModel(
+          title: title,
+          phone: content,
+          id: document.id,
+        ),
+      );
+    }
 
     return contacts;
   }
@@ -49,7 +49,7 @@ class FireBaseContactRepository implements Repository<ContactModel> {
 
   @override
   Future delete(id) async {
-    print("deleted $id");
+    developer.log("deleted $id");
     await _firebase.collection(collection).doc(id.toString()).delete();
     return id;
   }
@@ -58,10 +58,8 @@ class FireBaseContactRepository implements Repository<ContactModel> {
   Future<void> deleteAll() async {
     QuerySnapshot snap = await _firebase.collection(collection).get();
     contacts = [];
-    snap.docs.forEach(
-      (document) {
-        delete(document.id);
-      },
-    );
+    for (var document in snap.docs) {
+      delete(document.id);
+    }
   }
 }

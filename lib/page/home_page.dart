@@ -1,10 +1,12 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
-import 'package:flutter_application_1/db/local_contact_repository.dart';
+import 'package:flutter_application_1/bloc/ui/snackbar/snackbar_cubit.dart';
+import 'package:flutter_application_1/bloc/ui/snackbar/snackbar_state.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
 import 'package:flutter_application_1/page/update_model_page.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -68,7 +71,28 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
-          )
+          ),
+          BlocBuilder<SnackBarCubit, SnackBarState>(builder: (context, state) {
+            developer.log(state.toString());
+            if (state is SnackBarShowState) {
+              SchedulerBinding.instance!.addPostFrameCallback((_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('connected'),
+                  ),
+                );
+              });
+            } else if (state is SnackBarHideState) {
+              SchedulerBinding.instance!.addPostFrameCallback((_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Disconnected'),
+                  ),
+                );
+              });
+            }
+            return const SizedBox();
+          }),
         ],
       ),
       floatingActionButton: FloatingActionButton(

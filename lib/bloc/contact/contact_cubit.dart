@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 
@@ -24,7 +24,7 @@ class ContactCubit extends Cubit<List<ContactModel>> {
   Future<void> _syncData(NetworkState status) async {
     if (status is NetworkConnectedState) {
       final lastList = await contactRepository.getAll();
-      log("ConnectedState ${lastList.length}");
+      developer.log("ConnectedState ${lastList.length}");
 
       // 1 удалить старые данные с Удаленную базы данных
       await contactRepository.deleteAll();
@@ -42,18 +42,17 @@ class ContactCubit extends Cubit<List<ContactModel>> {
 
   Future<void> _syncWithLocal(List<ContactModel> contacts) async {
     if (networkCubit.state is NetworkConnectedState) {
-      log("Преобразование");
+      developer.log("Преобразование");
 
       final localRepo = LocalContactRepository();
 
-      final remoteRepo = FireBaseContactRepository();
       await localRepo.deleteAll();
       final remoteRepoDatas = await FireBaseContactRepository().getAll();
 
-      remoteRepoDatas.forEach((model) async {
+      for (var model in remoteRepoDatas) {
         await localRepo.create(model);
-      });
-      // log('Обновление UI');
+      }
+      developer.log('Обновление UI');
       // await localRepo.getAll();
 
       // final localRepo = LocalContactRepository()

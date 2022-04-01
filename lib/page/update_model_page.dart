@@ -95,6 +95,7 @@ class _UpdateModelPageState extends State<UpdateModelPage> {
                         if (value!.isEmpty) {
                           return 'Enter phone like +###(##)###-##-##';
                         }
+                        return null;
                       }),
                       controller: _controllerPhone,
                       decoration: InputDecoration(
