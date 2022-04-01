@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
-import 'package:flutter_application_1/bloc/ui/snackbar/snackbar_state.dart';
+import 'package:flutter_application_1/bloc/snackbar/snackbar_state.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SnackBarCubit extends Cubit<SnackBarState> {
@@ -16,7 +17,6 @@ class SnackBarCubit extends Cubit<SnackBarState> {
 
   void fooSnackbar(NetworkState status) {
     emit(SnackBarInitialState());
-
     if (status is NetworkConnectedState) {
       log('snackbar on');
       emit(SnackBarShowState());

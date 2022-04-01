@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
-import 'package:flutter_application_1/bloc/ui/snackbar/snackbar_cubit.dart';
+import 'package:flutter_application_1/bloc/snackbar/snackbar_cubit.dart';
 import 'package:flutter_application_1/db/local_contact_repository.dart';
 import 'package:flutter_application_1/page/home_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
