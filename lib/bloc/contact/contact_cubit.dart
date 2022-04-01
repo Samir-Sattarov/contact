@@ -16,12 +16,13 @@ class ContactCubit extends Cubit<List<ContactModel>> {
 
   ContactCubit(this.contactRepository, this.networkCubit) : super([]) {
     networkCubit.stream.listen(_syncData);
-    contactRepository.deleteAll();
-    stream.listen(syncWithLocal);
+
+    // contactRepository.deleteAll();
+    stream.listen(_syncWithLocal);
   }
 
-  Future<void> _syncData(NetworkState state) async {
-    if (state is NetworkConnectedState) {
+  Future<void> _syncData(NetworkState status) async {
+    if (status is NetworkConnectedState) {
       final lastList = await contactRepository.getAll();
       log("ConnectedState ${lastList.length}");
 
@@ -35,24 +36,39 @@ class ContactCubit extends Cubit<List<ContactModel>> {
         await contactRepository.create(model);
       }
       // refresh ui
-      await getAll();
     }
     await getAll();
   }
 
-  Future<void> syncWithLocal(List<ContactModel> contacts) async {
+  Future<void> _syncWithLocal(List<ContactModel> contacts) async {
     if (networkCubit.state is NetworkConnectedState) {
-      final repository = LocalContactRepository();
-      await repository.deleteAll();
+      log("Преобразование");
 
-      for (var model in contacts) {
-        await repository.create(
-          ContactModel(
-            title: model.title,
-            phone: model.phone,
-          ),
-        );
-      }
+      final localRepo = LocalContactRepository();
+
+      final remoteRepo = FireBaseContactRepository();
+      await localRepo.deleteAll();
+      final remoteRepoDatas = await FireBaseContactRepository().getAll();
+
+      remoteRepoDatas.forEach((model) async {
+        await localRepo.create(model);
+      });
+      // log('Обновление UI');
+      // await localRepo.getAll();
+
+      // final localRepo = LocalContactRepository()
+
+      // await localRepo.deleteAll();
+      // log('message');
+
+      // for (var model in contacts) {
+      //   await localRepo.create(
+      //     ContactModel(
+      //       title: model.title,
+      //       phone: model.phone,
+      //     ),
+      //   );
+      // }
     }
   }
 

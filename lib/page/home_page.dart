@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
+import 'package:flutter_application_1/db/local_contact_repository.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
 import 'package:flutter_application_1/page/update_model_page.dart';
@@ -39,6 +42,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               }
+
               return SizedBox.square(
                   child: Icon(
                 state is NetworkConnectedState

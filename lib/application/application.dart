@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
@@ -16,6 +18,7 @@ class MyApp extends StatelessWidget {
     const ConnectivityResult _connectionStatus = ConnectivityResult.none;
     final Connectivity _connectivity = Connectivity();
     NetworkCubit networkCubit = NetworkCubit(_connectionStatus, _connectivity);
+
     ContactCubit contactCubit =
         ContactCubit(LocalContactRepository(), networkCubit)..getAll();
     return MultiBlocProvider(

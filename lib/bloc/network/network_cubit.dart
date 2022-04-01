@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
 
 class NetworkCubit extends Cubit<NetworkState> {
@@ -21,6 +22,7 @@ class NetworkCubit extends Cubit<NetworkState> {
         .then((value) {
       if (result == ConnectivityResult.wifi) {
         developer.log('connected to wifi');
+
         emit(NetworkConnectedState());
       } else if (result == ConnectivityResult.none) {
         developer.log('no connection');
