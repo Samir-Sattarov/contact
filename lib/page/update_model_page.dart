@@ -14,12 +14,12 @@ class UpdateModelPage extends StatefulWidget {
   final String updateName;
   final String updatePhone;
   final id;
-  const UpdateModelPage(
-      {Key? key,
-      required this.updateName,
-      required this.updatePhone,
-      required this.id})
-      : super(key: key);
+  const UpdateModelPage({
+    Key? key,
+    required this.updateName,
+    required this.updatePhone,
+    required this.id,
+  }) : super(key: key);
 
   @override
   State<UpdateModelPage> createState() => _UpdateModelPageState();
@@ -124,20 +124,24 @@ class _UpdateModelPageState extends State<UpdateModelPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
+        onPressed: () {
           if (_key.currentState!.validate() == true) {
-            BlocProvider.of<ContactCubit>(context).update(
-              widget.id,
-              _controllerName.text,
-              _controllerPhone.text,
-            );
-
-            return Navigator.pop(context, true);
+            _onFloationActionButtonPress(context);
           }
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.check),
       ),
     );
+  }
+
+  void _onFloationActionButtonPress(BuildContext context) {
+    BlocProvider.of<ContactCubit>(context).update(
+      widget.id,
+      _controllerName.text,
+      _controllerPhone.text,
+    );
+
+    return Navigator.pop(context, true);
   }
 }

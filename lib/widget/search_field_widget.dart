@@ -39,16 +39,14 @@ class _SearchWidgetState extends State<SearchWidget> {
         controller: controller,
         decoration: InputDecoration(
           icon: Icon(Icons.search, color: style.color),
-          suffixIcon: controller.text.isNotEmpty
-              ? GestureDetector(
-                  child: Icon(Icons.close, color: style.color),
-                  onTap: () {
-                    controller.clear();
-                    widget.onChanged('');
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                )
-              : null,
+          suffixIcon: GestureDetector(
+            child: Icon(Icons.close, color: style.color),
+            onTap: () {
+              controller.clear();
+              widget.onChanged('');
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+          ),
           hintText: widget.hintText,
           hintStyle: style,
           border: InputBorder.none,

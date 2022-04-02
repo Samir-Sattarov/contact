@@ -16,11 +16,13 @@ class LocalContactRepository implements Repository<ContactModel> {
         //open the database or create a database if there isn't any
         path,
         version: 1, onCreate: (Database db, int version) async {
-      await db.execute("""
+      await db.execute(
+        """
           CREATE TABLE contact(
           id TEXT,
           title TEXT,
-          content TEXT)""");
+          content TEXT)""",
+      );
     });
   }
 
@@ -42,15 +44,14 @@ class LocalContactRepository implements Repository<ContactModel> {
     //returns the memos as a list (array)
 
     final db = await init();
-    final maps = await db
-        .query("contact"); //query all the rows in a table as an array of maps
+    final maps = await db.query("contact");
 
     return List.generate(maps.length, (i) {
       //create a list of memos
       return ContactModel(
         id: maps[i]['id'].toString(),
-        title: maps[i]['title'] as String,
-        phone: maps[i]['content'] as String,
+        title: maps[i]['title'].toString(),
+        phone: maps[i]['content'].toString(),
       );
     });
   }
@@ -60,10 +61,11 @@ class LocalContactRepository implements Repository<ContactModel> {
     //returns number of items deleted
     final db = await init();
 
-    int result = await db.delete("contact", //table name
-        where: "id = ?",
-        whereArgs: [id] // use whereArgs to avoid SQL injection
-        );
+    int result = await db.delete(
+      "contact", //table name
+      where: "id = ?",
+      whereArgs: [id], // use whereArgs to avoid SQL injection
+    );
 
     return result;
   }
@@ -74,8 +76,12 @@ class LocalContactRepository implements Repository<ContactModel> {
 
     final db = await init();
 
-    int result = await db
-        .update("contact", item.toMap(), where: "id = ?", whereArgs: [id]);
+    int result = await db.update(
+      "contact",
+      item.toMap(),
+      where: "id = ?",
+      whereArgs: [id],
+    );
     return result;
   }
 

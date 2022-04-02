@@ -1,12 +1,9 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_cubit.dart';
 import 'package:flutter_application_1/bloc/network/network_state.dart';
-import 'package:flutter_application_1/bloc/snackbar/snackbar_cubit.dart';
-import 'package:flutter_application_1/bloc/snackbar/snackbar_state.dart';
 
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/page/add_model_page.dart';
@@ -32,79 +29,94 @@ class _HomePageState extends State<HomePage> {
         elevation: 5,
         title: const Text('Contact Book Application'),
         actions: [
-          IconButton(onPressed: () async {
-            BlocProvider.of<ContactCubit>(context).getAll();
-          }, icon: BlocBuilder<NetworkCubit, NetworkState>(
-            builder: (context, state) {
-              if (state is NetworkSearchingState) {
-                return const SizedBox.square(
-                  dimension: 20.0,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.0,
-                  ),
-                );
-              }
-
-              return SizedBox.square(
-                  child: Icon(
-                state is NetworkConnectedState
-                    ? Icons.cloud
-                    : Icons.cloud_off_rounded,
-              ));
-            },
-          )),
+          IconButton(
+            onPressed: _onAppbarIconButtonPress,
+            icon: BlocConsumer<NetworkCubit, NetworkState>(
+              listener: _listener,
+              builder: _buildIcon,
+            ),
+          )
         ],
       ),
       body: Column(
         children: [
           buildSearch(),
-          BlocBuilder<ContactCubit, List<ContactModel>>(
-            builder: (context, contact) {
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: contact.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final model = contact[index];
-                    return buildModel(model);
-                  },
-                ),
-              );
-            },
-          ),
-          BlocBuilder<SnackBarCubit, SnackBarState>(builder: (context, state) {
-            developer.log(state.toString());
-            if (state is SnackBarShowState) {
-              SchedulerBinding.instance!.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('connected'),
-                  ),
-                );
-              });
-            } else if (state is SnackBarHideState) {
-              SchedulerBinding.instance!.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Disconnected'),
-                  ),
-                );
-              });
-            }
-            return const SizedBox();
-          }),
+          BlocBuilder<ContactCubit, List<ContactModel>>(builder: _buildBody),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final isAdded = await Navigator.push(context, AddModelPage.route());
-          if (isAdded != null && isAdded == true) {
-            BlocProvider.of<ContactCubit>(context).getAll();
-          }
-        },
+        onPressed: _onFloatingAActionButtonPress,
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Widget _buildBody(context, contact) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: contact.length,
+        itemBuilder: (BuildContext context, int index) {
+          final model = contact[index];
+          return buildModel(model);
+        },
+      ),
+    );
+  }
+
+  void _listener(context, state) {
+    if (state is NetworkConnectedState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            "Connected",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+    if (state is NetworkDisconnectedState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Disconnected",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+  }
+
+  _onFloatingAActionButtonPress() async {
+    final isAdded = await Navigator.push(
+      context,
+      AddModelPage.route(),
+    );
+    if (isAdded != null && isAdded == true) {
+      BlocProvider.of<ContactCubit>(context).getAll();
+    }
+  }
+
+  void _onAppbarIconButtonPress() async {
+    BlocProvider.of<ContactCubit>(context).getAll();
+  }
+
+  Widget _buildIcon(context, state) {
+    if (state is NetworkSearchingState) {
+      return const SizedBox.square(
+        dimension: 20.0,
+        child: CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 2.0,
+        ),
+      );
+    }
+
+    return SizedBox.square(
+        child: Icon(
+      state is NetworkConnectedState ? Icons.cloud : Icons.cloud_off_rounded,
+    ));
   }
 
   Widget buildSearch() => SearchWidget(
