@@ -14,6 +14,7 @@ import 'package:flutter_application_1/widget/search_field_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
+  static route() => MaterialPageRoute(builder: (context) => const HomePage());
   const HomePage({Key? key}) : super(key: key);
   @override
   State<HomePage> createState() => _HomePageState();
