@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddModelPage extends StatelessWidget {
@@ -109,7 +109,7 @@ class AddModelPage extends StatelessWidget {
   }
 
   _onFloationButtonPresed(context) {
-    BlocProvider.of<ContactCubit>(context).add(
+    BlocProvider.of<DatabaseCubit>(context).add(
       _controllerName.text,
       _controllerPhone.text,
     );

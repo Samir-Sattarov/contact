@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
+import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdateModelPage extends StatefulWidget {
@@ -136,7 +136,7 @@ class _UpdateModelPageState extends State<UpdateModelPage> {
   }
 
   void _onFloationActionButtonPress(BuildContext context) {
-    BlocProvider.of<ContactCubit>(context).update(
+    BlocProvider.of<DatabaseCubit>(context).update(
       widget.id,
       _controllerName.text,
       _controllerPhone.text,

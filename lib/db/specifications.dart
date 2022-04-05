@@ -1,4 +1,4 @@
-abstract class Repository<T> {
+abstract class Specification<T> {
   Future create(T item);
 
   Future<List<T>> getAll();

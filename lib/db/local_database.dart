@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_application_1/db/repository.dart';
+import 'package:flutter_application_1/db/specifications.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class LocalContactRepository implements Repository<ContactModel> {
+class LocalDatabase implements Specification<ContactModel> {
   Future<Database> init() async {
     Directory directory =
         await getApplicationDocumentsDirectory(); //returns a directory which stores permanent files

@@ -1,13 +1,13 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/bloc/contact/contact_cubit.dart';
-import 'package:flutter_application_1/bloc/network/network_cubit.dart';
-import 'package:flutter_application_1/bloc/network/network_state.dart';
+import 'package:flutter_application_1/cubit/database/database_cubit.dart';
+import 'package:flutter_application_1/cubit/network/network_cubit.dart';
+import 'package:flutter_application_1/cubit/network/network_state.dart';
 
 import 'package:flutter_application_1/model/contact_model.dart';
-import 'package:flutter_application_1/page/add_model_page.dart';
-import 'package:flutter_application_1/page/update_model_page.dart';
+import 'package:flutter_application_1/pages/add_model_page.dart';
+import 'package:flutter_application_1/pages/update_model_page.dart';
 import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
 import 'package:flutter_application_1/widget/search_field_widget.dart';
@@ -35,13 +35,20 @@ class _HomePageState extends State<HomePage> {
               listener: _listener,
               builder: _buildIcon,
             ),
-          )
+          ),
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<DatabaseCubit>(context)
+                  .deleteAllFromAllDatabase();
+            },
+            icon: Icon(Icons.restore_from_trash),
+          ),
         ],
       ),
       body: Column(
         children: [
           buildSearch(),
-          BlocBuilder<ContactCubit, List<ContactModel>>(builder: _buildBody),
+          BlocBuilder<DatabaseCubit, List<ContactModel>>(builder: _buildBody),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -94,12 +101,12 @@ class _HomePageState extends State<HomePage> {
       AddModelPage.route(),
     );
     if (isAdded != null && isAdded == true) {
-      BlocProvider.of<ContactCubit>(context).getAll();
+      BlocProvider.of<DatabaseCubit>(context).getAll();
     }
   }
 
   void _onAppbarIconButtonPress() async {
-    BlocProvider.of<ContactCubit>(context).getAll();
+    BlocProvider.of<DatabaseCubit>(context).getAll();
   }
 
   Widget _buildIcon(context, state) {
@@ -126,7 +133,7 @@ class _HomePageState extends State<HomePage> {
       );
 
   void search(String query) {
-    BlocProvider.of<ContactCubit>(context).search(query);
+    BlocProvider.of<DatabaseCubit>(context).search(query);
   }
 
   Widget buildModel(ContactModel model) => ListTileWidget(
@@ -143,7 +150,7 @@ class _HomePageState extends State<HomePage> {
             ),
           );
           if (result != null && result == true) {
-            BlocProvider.of<ContactCubit>(context).getAll();
+            BlocProvider.of<DatabaseCubit>(context).getAll();
           }
         },
         onDelete: () {
@@ -163,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text("Yes"),
                   onPressed: () {
-                    BlocProvider.of<ContactCubit>(context).delete(model.id);
+                    BlocProvider.of<DatabaseCubit>(context).delete(model.id);
                     Navigator.pop(context, true);
                   },
                 ),

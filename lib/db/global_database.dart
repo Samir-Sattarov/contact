@@ -1,11 +1,11 @@
 import 'dart:developer' as developer;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/db/specifications.dart';
 
-import 'package:flutter_application_1/db/repository.dart';
 import 'package:flutter_application_1/model/contact_model.dart';
 
-class FireBaseContactRepository implements Repository<ContactModel> {
+class GlobalDatabase implements Specification<ContactModel> {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
   List<ContactModel> contacts = [];
   final String collection = 'contact';
