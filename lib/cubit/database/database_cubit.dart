@@ -32,7 +32,6 @@ class DatabaseCubit extends Cubit<List<ContactModel>> {
       for (var model in lastList) {
         await contactRepository.create(model);
       }
-      // refresh ui
     }
     await getAll();
   }
@@ -65,7 +64,7 @@ class DatabaseCubit extends Cubit<List<ContactModel>> {
   }
 
   void delete(id) async {
-    await contactRepository.delete(id);
+    contactRepository.delete(id);
     await getAll();
   }
 
