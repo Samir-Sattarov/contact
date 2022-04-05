@@ -37,11 +37,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              BlocProvider.of<DatabaseCubit>(context)
-                  .deleteAllFromAllDatabase();
-            },
-            icon: Icon(Icons.restore_from_trash),
+            onPressed: () => BlocProvider.of<DatabaseCubit>(context)
+                .deleteAllFromAllDatabase(),
+            icon: const Icon(Icons.restore_from_trash),
           ),
         ],
       ),
