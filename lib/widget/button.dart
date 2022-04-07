@@ -7,6 +7,8 @@ class ButtonWidget extends StatelessWidget {
   final double? width;
   final double? height;
   final Function() onTap;
+  final Color? color;
+  final Color? shadowColor;
   final BorderRadius? borderRadius;
   const ButtonWidget({
     Key? key,
@@ -17,6 +19,8 @@ class ButtonWidget extends StatelessWidget {
     this.textStyle,
     required this.onTap,
     this.borderRadius,
+    this.color,
+    this.shadowColor,
   }) : super(key: key);
 
   @override
@@ -30,18 +34,17 @@ class ButtonWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.amber.withOpacity(0.5),
+              color: shadowColor ?? Colors.amber.withOpacity(0.5),
               blurRadius: 10,
-              offset: Offset(0, 5),
+              offset: const Offset(0, 5),
             ),
           ],
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            shadowColor: Colors.green,
-            primary: Colors.amber,
+            primary: color ?? Colors.amber,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: borderRadius ?? BorderRadius.circular(20),
             ),
           ),
           onPressed: onTap,

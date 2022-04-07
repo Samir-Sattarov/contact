@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
 import 'package:flutter_application_1/db/local_database.dart';
-import 'package:flutter_application_1/pages/auth/login.dart';
+import 'package:flutter_application_1/pages/auth/singIn.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyApp extends StatelessWidget {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blueGrey,
         ),
-        home: Login(),
+        home: SingIn(),
       ),
     );
   }

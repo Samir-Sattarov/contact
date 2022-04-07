@@ -2,15 +2,15 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/user.dart';
+import 'package:flutter_application_1/pages/auth/registation.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/services/auth.dart';
 import 'package:flutter_application_1/widget/textFormField_widget.dart';
 import 'package:flutter_application_1/widget/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Registration extends StatelessWidget {
-  static route() => MaterialPageRoute(builder: (context) => Registration());
-  Registration({Key? key}) : super(key: key);
+class SingIn extends StatelessWidget {
+  SingIn({Key? key}) : super(key: key);
   final TextEditingController _controllerLogin = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
@@ -20,18 +20,6 @@ class Registration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.blue,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
         child: Padding(
@@ -40,9 +28,9 @@ class Registration extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height / 6),
+              SizedBox(height: MediaQuery.of(context).size.height / 4),
               const Text(
-                'Registration',
+                'Sing In',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,
@@ -50,54 +38,25 @@ class Registration extends StatelessWidget {
                   fontSize: 28,
                 ),
               ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Text('Do not have a account?'),
+                  const SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, Registration.route()),
+                    child: const Text(
+                      'Registration',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
               Form(
                 key: _globalKey,
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
-                    TextFormFieldWidget(
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Введите имя пользователя';
-                        } else if (value.isEmpty) {
-                          return 'Поле является обизательным';
-                        }
-                        return null;
-                      },
-                      prefixIcon: const Icon(Icons.person),
-                      hintText: 'Name',
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.blue.shade700,
-                          width: 3,
-                        ),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.blue.shade700,
-                          width: 3,
-                        ),
-                      ),
-                      errorStyle: const TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                      controller: _controllerLogin,
-                      focusBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.blue.shade100,
-                          width: 3,
-                        ),
-                      ),
-                      borderDefault: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
                     const SizedBox(height: 20),
                     TextFormFieldWidget(
                       validator: (value) {
