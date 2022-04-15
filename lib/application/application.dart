@@ -1,10 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
 import 'package:flutter_application_1/db/local_database.dart';
-import 'package:flutter_application_1/pages/auth/singIn.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../pages/auth/sign_In_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -38,7 +40,16 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blueGrey,
         ),
-        home: SingIn(),
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasData) {
+              return const SignInPage();
+            } else {
+              return const SignInPage();
+            }
+          },
+        ),
       ),
     );
   }

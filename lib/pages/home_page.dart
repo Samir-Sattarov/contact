@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_application_1/cubit/network/network_state.dart';
 
 import 'package:flutter_application_1/model/contact_model.dart';
 import 'package:flutter_application_1/pages/add_model_page.dart';
+import 'package:flutter_application_1/pages/auth/sign_out_page.dart';
 import 'package:flutter_application_1/pages/update_model_page.dart';
 import 'package:flutter_application_1/widget/alert_dialog_widget.dart';
 import 'package:flutter_application_1/widget/list_tile_widget.dart';
@@ -27,8 +26,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.push(
+            context,
+            SignOutPage.route(),
+          ),
+          icon: const Icon(Icons.exit_to_app),
+        ),
         elevation: 5,
-        title: const Text('Contact Book Application'),
+        title: const Text('Contact Book'),
         actions: [
           IconButton(
             onPressed: _onAppbarIconButtonPress,

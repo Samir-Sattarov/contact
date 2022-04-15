@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListTileWidget extends StatelessWidget {
   final String title;
@@ -19,6 +20,9 @@ class ListTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
+      onLongPress: () async {
+        await launch('tel:$phone');
+      },
       title: Text(title),
       subtitle: Text(phone),
       trailing: IconButton(

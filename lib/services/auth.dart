@@ -1,6 +1,7 @@
-import 'dart:developer';
+import 'dart:developer' as dev;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/model/user.dart';
 
 class AuthServices {
@@ -22,19 +23,27 @@ class AuthServices {
 
   Future singInWithEmailPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
       );
-
-      User? user = result.user;
-      return user;
     } catch (error) {
-      throw Exception(error);
+      dev.log('Error message: $error');
     }
   }
 
-  Future registerWithEmailPassword() async {}
+  Future registerWithEmailPassword(String email, String password) async {
+    try {
+      _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+    } on PlatformException catch (error) {
+      throw Exception(error.message);
+    }
+  }
 
-  Future singOut() async {}
+  Future singOut() async {
+    _auth.signOut();
+  }
 }
