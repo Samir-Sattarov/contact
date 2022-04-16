@@ -3,7 +3,6 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_state.dart';
-import 'package:flutter_application_1/model/user.dart';
 import 'package:flutter_application_1/pages/auth/sign_up_page.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/services/auth.dart';
@@ -243,58 +242,12 @@ class _SignInPageState extends State<SignInPage> {
                           },
                   ),
                   const SizedBox(height: 20),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () async {
-                        UserModel result =
-                            await _authServices.singInAnonymous();
-                        if (result == null) {
-                          dev.log('error singIn');
-                        } else {
-                          dev.log('singned in ');
-                          dev.log(result.uid.toString());
-
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            HomePage.route(),
-                            (route) => false,
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade400,
-                              offset: const Offset(0, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                        child: Row(
-                          children: const [
-                            Spacer(),
-                            Icon(Icons.person),
-                            SizedBox(width: 10),
-                            Text(
-                              'Sign In anonymously',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 14),
-                            ),
-                            Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 10),
                   Center(
                     child: GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        final result = _authServices.googleLogin();
+                      },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2,
                         height: 40,

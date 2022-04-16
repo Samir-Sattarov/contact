@@ -3,9 +3,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_state.dart';
-import 'package:flutter_application_1/model/user.dart';
 import 'package:flutter_application_1/pages/auth/verified_page.dart';
-import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/services/auth.dart';
 import 'package:flutter_application_1/widget/textFormField_widget.dart';
 import 'package:flutter_application_1/widget/button.dart';
@@ -201,15 +199,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   onTap: _activeButton == true
                       ? () async {
                           if (_globalKey.currentState!.validate()) {
-                            _auth.registerWithEmailPassword(
-                              _controllerLogin.text,
-                              _controllerPassword.text,
-                            );
-
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              VerifiedPage.route(),
-                              (route) => false,
+                            _auth
+                                .registerWithEmailPassword(
+                              email: _controllerLogin.text,
+                              password: _controllerPassword.text,
+                            )
+                                .then(
+                              (value) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  VerifiedPage.route(),
+                                  (route) => false,
+                                );
+                              },
                             );
                           }
                         }
@@ -240,53 +242,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                 ),
                 const SizedBox(height: 20),
-                Center(
-                  child: GestureDetector(
-                    onTap: () async {
-                      UserModel result = await _auth.singInAnonymous();
-                      if (result == null) {
-                        dev.log('error singIn');
-                      } else {
-                        dev.log('singned in ');
-                        dev.log(result.uid.toString());
-
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          HomePage.route(),
-                          (route) => false,
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 2,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: const Offset(0, 1),
-                            blurRadius: 3,
-                          ),
-                        ],
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        children: const [
-                          Spacer(),
-                          Icon(Icons.person),
-                          SizedBox(width: 10),
-                          Text(
-                            'SingIn anonymously',
-                            style: TextStyle(color: Colors.black, fontSize: 14),
-                          ),
-                          Spacer(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
                 Center(
                   child: GestureDetector(
                     onTap: () {

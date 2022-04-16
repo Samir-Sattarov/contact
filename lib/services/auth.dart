@@ -1,10 +1,16 @@
 import 'dart:developer' as dev;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/model/user.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthServices {
+class AuthServices extends ChangeNotifier {
+  final googleSignIn = GoogleSignIn();
+
+  GoogleSignInAccount? _user;
+  GoogleSignInAccount get user => _user!;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<UserModel?> _userFromFirebaseUser(User? user) async {
@@ -32,7 +38,8 @@ class AuthServices {
     }
   }
 
-  Future registerWithEmailPassword(String email, String password) async {
+  Future registerWithEmailPassword(
+      {required String email, required String password}) async {
     try {
       _auth.createUserWithEmailAndPassword(
         email: email.trim(),
@@ -41,6 +48,21 @@ class AuthServices {
     } on PlatformException catch (error) {
       throw Exception(error.message);
     }
+  }
+
+  Future googleLogin() async {
+    final googleUser = await googleSignIn.signIn();
+    if (googleUser == null) return;
+    _user = googleUser;
+
+    final googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    notifyListeners();
   }
 
   Future singOut() async {

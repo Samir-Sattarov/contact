@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/database/database_cubit.dart';
 import 'package:flutter_application_1/cubit/network/network_cubit.dart';
 import 'package:flutter_application_1/db/local_database.dart';
+import 'package:flutter_application_1/pages/auth/verified_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../pages/auth/sign_In_page.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.hasData) {
-              return const SignInPage();
+              return const VerifiedPage();
             } else {
               return const SignInPage();
             }
